@@ -1,22 +1,40 @@
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 </head>
 <body oncontextmenu="return false" onselectstart="return false">
-∏Ò◊”≥§£∫<input type="text" id="txtLength" value="10" /> ∏Ò◊”øÌ£∫<input type="text" id="txtWidth" value="10"/>
-<input type="button" value="ªÊ÷∆∏Ò◊”" id="btnPrint" onclick="initGrid();" />
-<input type="button" value="À—À˜¬∑æ∂" id="btnPrint" onclick="startSearch();" />
+Ê†ºÂ≠êÈïøÔºö<input type="text" id="txtLength" value="10" /> Ê†ºÂ≠êÂÆΩÔºö<input type="text" id="txtWidth" value="10"/>
+<input type="button" value="ÁªòÂà∂Ê†ºÂ≠ê" id="btnPrint1" onclick="initGrid();" />
+<input type="button" value="ÊêúÁ¥¢Ë∑ØÂæÑ" id="btnPrint2" onclick="startSearch();" />
 <br/>
-Ã· æ£∫µ„ª˜∏Ò◊”…Ë÷√/»°œ˚’œ∞≠
+ÊèêÁ§∫ÔºöÁÇπÂáªÊ†ºÂ≠êËÆæÁΩÆ/ÂèñÊ∂àÈöúÁ¢ç
 <div id="container">
 </div>
 <div id="msg">
 </div>
 <div>
     <script>
-        var tdTitle = "µ„ª˜∏Ò◊”…Ë÷√/»°œ˚’œ∞≠";
-        var grid = [];
+        var tdTitle = "ÁÇπÂáªÊ†ºÂ≠êËÆæÁΩÆ/ÂèñÊ∂àÈöúÁ¢ç";
+       // var grid = [];
+        var grid=[[1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,  1,0,1],
+            [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,  1,0,1],
+            [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1,  1,0,1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,  1,0,1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1,  1,0,1],
+            [1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1,  1,0,1],
+            [1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1 , 1,0,1],
+            [1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 , 1,0,1],
+            [1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 , 1,0,1],
+            [1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 , 1,0,1],
+            [1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1 , 1,0,1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 , 1,0,1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 , 1,0,1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 , 1,0,1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0 , 0,0,1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 , 1,1,1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 , 1,1,1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 , 1,1,1]];
         var X = Y = 0;
         var gridUI = [];
         var pathLength = 0;
@@ -34,14 +52,21 @@
 //            X = parseInt($("txtLength").value) || 0;
 //            Y = parseInt($("txtWidth").value) || 0;
             X=18;
-            y=18;
+            Y=18;
             var html = "<table id='mainTable' border='0' cellpadding='1' cellspacing='1' style='background:#999999;' ><tbody>";
             for(var i=0;i<X;i++){
                 html += "<tr>";
-                grid[i] = [];
+               //grid[i] = [];
                 for(var j=0;j<Y;j++){
-                    grid[i][j] = 1;
-                    html += "<td title='"+ tdTitle +"' width='30' height='30' style='background:#ffffff;' onclick='setBlock(this,"+ i +","+ j +")'> </td>";
+                   if(grid[i][j] == 1 )
+                   {
+                       html += "<td title='"+ tdTitle +"' width='30' height='30' style='background:#ffffff;' onclick='setBlock(this,"+ i +","+ j +")'> </td>";
+                   }
+                   else
+                   {
+                       html += "<td title='"+ tdTitle +"' width='30' height='30' style='background:#666666;' onclick='setBlock(this,"+ i +","+ j +")'> </td>";
+                   }
+
                 }
                 html += "</tr>";
             }
@@ -82,7 +107,7 @@
             this.PrePOS = prePOS;
         }
         Position.prototype.validate = function(nextPos){
-            //1 ‘⁄∑Ω∏Ò∑∂Œß÷Æƒ⁄µƒ£¨2 ∑«’œ∞≠ŒÔ£¨3 »Ùµ±«∞posµƒprevious pos¥Ê‘⁄«“£¨next pos≤ªŒ™previous pos
+            //1 Âú®ÊñπÊ†ºËåÉÂõ¥‰πãÂÜÖÁöÑÔºå2 ÈùûÈöúÁ¢çÁâ©Ôºå3 Ëã•ÂΩìÂâçposÁöÑprevious posÂ≠òÂú®‰∏îÔºånext pos‰∏ç‰∏∫previous pos
             if( nextPos.X >=0 && nextPos.X < X && nextPos.Y >=0 && nextPos.Y < Y && grid[nextPos.X][nextPos.Y]==1 && !searchedQ.has(nextPos)){
                 if( this.PrePOS && nextPos.X == this.PrePOS.X && nextPos.Y == this.PrePOS.Y){
                     return false;

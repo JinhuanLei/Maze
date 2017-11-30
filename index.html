@@ -7,11 +7,16 @@
 </head>
 <body>
 <div class="container">
-<div class="row">
+<div class="row" >
     <div class="col-md-10" style="margin-top: 20px">
     <canvas id="canvas1" width="1200" height="600"></canvas>
         <img src="images/pacman.png" id="pacman" hidden="hidden" />
+        <div  id="container">
+
+        </div>
     </div>
+
+
 </div>
 </div>
 <script src="js/jquery.js";></script>
@@ -54,6 +59,7 @@
     var grid=[];
     var fps, fpsInterval, startTime, now, then, elapsed;
     var X = Y = 0;
+    var tdTitle = "点击格子设置/取消障碍";
     var maze = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,  0,1,0],
                 [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,  0,1,0],
                 [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,  0,1,0],
@@ -74,9 +80,11 @@
                 [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,0,0]];
     var str=searchRoadAStar(17,0,0,17);
         DrawMaze();
+    initGrid();
+    function $(id) {
+        return document.getElementById(id);
+    }
         drawPath();
-
-
     startAnimating(5);
 
     function startAnimating(fps) {
@@ -86,11 +94,56 @@
         MoveInMaze();
     }
 
+    function setBlock(td,i,j){
+        if(grid[i][j] == 1){
+            gridUI[i][j].style.background='#666666';
+            grid[i][j] = 0;//block
+        }else{
+            gridUI[i][j].style.background='#ffffff';
+            grid[i][j] = 1;
+        }
+    }
+
+    function initGrid(){
+        pathLength = 0;
+       // closedQ = new Queue();
+//            X = parseInt($("txtLength").value) || 0;
+//            Y = parseInt($("txtWidth").value) || 0;
+        X=18;
+        Y=18;
+        var html = "<table id='mainTable' border='1' cellpadding='1' cellspacing='1' style='background:#999999;' ><tbody>";
+        for(var i=0;i<X;i++){
+            html += "<tr>";
+            grid[i] = [];
+            for(var j=0;j<Y;j++){
+                grid[i][j] = 1;
+                html += "<td title='"+ tdTitle +"' width='30' height='30' style='background:#ffffff;' onclick='setBlock(this,"+ i +","+ j +")'> <img src='images/pacman.png' </td>";
+            }
+            html += "</tr>";
+        }
+        html += "</tbody></table>";
+        $("container").innerHTML = html;
+
+        var table = $('mainTable');
+        for (var i = 0; i < X; i++) {
+            gridUI[i] = new Array(Y);
+            for (var j = 0; j < Y; j++) {
+                gridUI[i][j] = table.rows[i].cells[j];
+            }
+        }
+
+        //print start and end position.
+//        endPos = new Position(X-1,Y-1);
+//        gridUI[startPos.X][startPos.Y].style.background='#339933';
+//        gridUI[endPos.X][endPos.Y].style.background='#339933';
+//        gridUI[startPos.X][startPos.Y].onclick="return false;";
+//        gridUI[endPos.X][endPos.Y].onclick="return false;";
+//        gridUI[startPos.X][startPos.Y].title="start";
+//        gridUI[endPos.X][endPos.Y].title="end";
+    }
 
 
-
-
-       function initialMaze(arrlength) {
+       function initialMaze(arrlength) {   //随机生成迷宫
     var newmaze=new Array();
     var x=Math.random();
     for(var y=0;y<arrlength;y++)

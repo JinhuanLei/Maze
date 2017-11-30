@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+<div class="container">
+<div class="row">
+    <div class="col-md-10" style="margin-top: 20px">
+    <canvas id="canvas1" width="1200" height="600"></canvas>
+        <img src="images/pacman.png" id="pacman" hidden="hidden" />
+    </div>
+</div>
+</div>
+<script src="js/jquery.js";></script>
+<script src="js/bootstrap.js"></script>
+
+<script type="text/javascript">
+    // requestAnimationFrame的兼容性写法
+
+    window.requestAnimFrame = (function(){                //浏览器的兼容设置
+        return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function(/* function */ callback, /* DOMElement */ element){
+                window.setTimeout(callback, 1000/ 60);     //定义每秒执行60次动画
+            };
+    })();
+
+        window.cancelAnimationFrame = (function() {
+            return window.cancelAnimationFrame ||
+                window.webkitCancelAnimationFrame ||
+                window.mozCancelAnimationFrame ||
+                window.oCancelAnimationFrame ||
+                function(timer) {
+                    window.clearTimeout(timer);
+                };
+        })();
+
+        var canvas1 = document.getElementById("canvas1");
+        var ctx = canvas1.getContext("2d");
+        var baseX=300;
+        var baseY=20;
+        var wallwidth=30;
+       var moveX=0;
+    var moveY=0;
+    var pointer=0;
+    var stopMark=0;
+    var gridUI = [];
+    var grid=[];
+    var fps, fpsInterval, startTime, now, then, elapsed;
+    var X = Y = 0;
+    var maze = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,  0,1,0],
+                [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,  0,1,0],
+                [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,  0,1,0],
+                [0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,  0,1,0],
+                [0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,  0,1,0],
+                [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,  0,1,0],
+                [0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
+                [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
+                [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
+                [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
+                [0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 , 0,1,0],
+                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,1,0],
+                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,1,0],
+                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,1,0],
+                [0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1 , 1,1,0],
+                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,0,0],
+                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,0,0],
+                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,0,0]];
+    var str=searchRoadAStar(17,0,0,17);
+        DrawMaze();
+        drawPath();
+
+
+    startAnimating(5);
+
+    function startAnimating(fps) {
+        fpsInterval = 1000 / fps;
+        then = Date.now();
+        startTime = then;
+        MoveInMaze();
+    }
+
+
+
+
+
+       function initialMaze(arrlength) {
+    var newmaze=new Array();
+    var x=Math.random();
+    for(var y=0;y<arrlength;y++)
+    {
+        var row=new Array();
+        for(var x=0;x<arrlength;x++)
+        {
+
+            row[x]=Math.floor(Math.random()*2);
+        }
+        newmaze[y]=row;
+    }
+    return newmaze;
+       }
+
+
+    function MoveInMaze()
+    {
+        //console.log(str);
+//        console.log(str[pointer].x);
+
+
+        stopMark=requestAnimFrame(MoveInMaze);
+
+        now = Date.now();
+        elapsed = now - then;
+
+        // if enough time has elapsed, draw the next frame
+
+        if (elapsed > fpsInterval) {
+
+            // Get ready for next frame by setting then=now, but also adjust for your
+            // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+            then = now - (elapsed % fpsInterval);
+
+            // Put your drawing code here
+            var pacman=document.getElementById("pacman");
+            moveX=baseX+str[pointer].y*wallwidth;
+            moveY=baseY+str[pointer].x*wallwidth;
+
+
+            if(pointer==str.length)
+            {
+                if(stopMark) {
+                    window.cancelAnimationFrame(stopMark);
+                    stopMark = null;
+                }
+                return;
+            }
+            if(pointer>=1)
+
+            {
+                ctx.clearRect(baseX+str[pointer-1].y*wallwidth,baseY+str[pointer-1].x*wallwidth, 30,30);
+            }
+
+            ctx.drawImage(pacman,moveX, moveY);
+
+            pointer++;
+        }
+
+    }
+
+
+       function drawPath() {
+
+
+
+        ctx.lineWidth = 2;
+        //设置线的颜色
+        ctx.strokeStyle ="blue";
+
+
+        ctx.fillStyle="aquamarine";
+
+        for(var t=0;t<str.length;t++)
+        {
+            ctx.fillRect(baseX+wallwidth*str[t].y,baseY+wallwidth*str[t].x,wallwidth,wallwidth);
+        }
+
+    }
+
+
+
+    function DrawMaze() {
+        //设置线宽
+        ctx.lineWidth = 10;
+        //设置线的颜色
+        ctx.strokeStyle ="dodgerblue";
+        ctx.fillStyle="black";
+
+        //画一个空心的矩形，
+        ctx.strokeRect(0,0,1200,600);
+        //maze=initialMaze(17);
+for(var y=0;y<maze.length;y++)
+{
+    console.log(maze[y].length);
+    for(var x=0;x<maze[y].length;x++)
+    {
+        if(maze[y][x]==1)
+        {
+             ctx.fillRect(baseX+wallwidth*x,baseY+wallwidth*y,wallwidth,wallwidth);
+        }
+    }
+}
+
+        ctx.strokeRect(baseX,baseY,maze[1].length*wallwidth,maze.length*wallwidth);
+    }
+
+
+function searchRoadDFS(start_x,start_y,end_x,end_y) {
+    var stackList=[];
+    var result=[];
+
+        if(start_x==end_x&&start_y==end_y)
+        {
+            return true;
+        }
+            var node=new Node(start_x,start_y,1);
+            stackList.push({position:node});
+
+            while (stackList.length==0)
+            {
+           var currentPoint=stackList.pop();
+           var surroundPoint=SurroundPoint(currentPoint);
+         for(var i=0;i<surroundPoint.length;i++)
+     {
+         var childNode=surroundPoint[i];
+
+
+
+         if(childNode!=null &&
+             !childNode.visited &&
+             childNode.x>=0 &&                            //判断是否在地图上
+             childNode.y>=0 &&
+             childNode.x<maze.length &&
+             childNode.y<maze[0].length &&
+             maze[childNode.x][childNode.y] != 1 &&         //判断是否是障碍物
+             //判断是否在关闭列表中
+             maze[childNode.x][currentPoint.y]!=1 &&   //判断之间是否有障碍物，如果有障碍物是过不去的
+             maze[currentPoint.x][childNode.y]!=1)
+         {
+             stackList.add(childNode);
+             childNode.visited=true;
+
+         }
+     }
+
+            }
+}
+
+function Node(x,y,visited){
+        this.x = x;
+        this.y = y;
+        this.visited=visited;
+    }
+
+
+
+
+
+    function searchRoadAStar(start_x,start_y,end_x,end_y){
+        var openList=[],    //开启列表
+            closeList=[],   //关闭列表
+            result=[],      //结果数组
+            result_index;   //结果数组在开启列表中的序号
+//        ctx.fillStyle="aquamarine";
+//        ctx.fillRect(baseX+wallwidth*start_y,baseY+start_x*wallwidth,wallwidth,wallwidth);    //坐标和画布相反的,初始点
+
+
+        openList.push({x:start_x,y:start_y,G:0});//把当前点加入到开启列表中，并且G是0
+
+        do{
+            var currentPoint = openList.pop();
+            closeList.push(currentPoint);
+            var surroundPoint=SurroundPoint(currentPoint);
+            for(var i in surroundPoint) {
+                var item = surroundPoint[i];                //获得周围的八个点
+
+                if (
+                    item.x>=0 &&                            //判断是否在地图上
+                    item.y>=0 &&
+                    item.x<maze.length &&
+                    item.y<maze[0].length &&
+                    maze[item.x][item.y] != 1 &&         //判断是否是障碍物
+                    !existList(item, closeList) &&          //判断是否在关闭列表中
+                    maze[item.x][currentPoint.y]!=1 &&   //判断之间是否有障碍物，如果有障碍物是过不去的
+                    maze[currentPoint.x][item.y]!=1) {
+                    //g 到父节点的位置
+                    //如果是上下左右位置的则g等于10，斜对角的就是14
+                    var g = currentPoint.G + ((currentPoint.x - item.x) * (currentPoint.y - item.y) == 0 ? 10 : 14);
+                    if (!existList(item, openList)) {       //如果不在开启列表中
+                        //计算H，通过水平和垂直距离进行确定
+                        item['H'] = Math.abs(end_x - item.x) * 10 + Math.abs(end_y - item.y) * 10;
+                        item['G'] = g;
+                        item['F'] = item.H + item.G;
+                        item['parent'] = currentPoint;
+                        openList.push(item);
+                    }
+                    else {                                  //存在在开启列表中，比较目前的g值和之前的g的大小
+                        var index = existList(item, openList);
+                        //如果当前点的g更小
+                        if (g < openList[index].G) {
+                            openList[index].parent = currentPoint;
+                            openList[index].G = g;
+                            openList[index].F=g+openList[index].H;
+                        }
+
+                    }
+                }
+            }
+            //如果开启列表空了，没有通路，结果为空
+            if(openList.length==0) {
+                //alert("here");
+                break;
+            }
+            openList.sort(sortF);//这一步是为了循环回去的时候，找出 F 值最小的, 将它从 "开启列表" 中移掉
+        }while(!(result_index=existList({x:end_x,y:end_y},openList)));
+
+        //判断结果列表是否为空
+        if(!result_index) {
+            result=[];
+        }
+        else {
+            var currentObj=openList[result_index];
+            do{
+                //把路劲节点添加到result当中
+                result.unshift({
+                    x:currentObj.x,
+                    y:currentObj.y
+                });
+                currentObj=currentObj.parent;
+            }while (currentObj.x!=start_x || currentObj.y!=start_y);
+
+        }
+        result.unshift({
+            x:start_x,
+            y:start_y
+        });
+        return result;
+
+    }
+    //用F值对数组排序
+    function sortF(a,b){
+        return b.F- a.F;
+    }
+    //获取周围八个点的值
+    function SurroundPoint(curPoint){
+        var x=curPoint.x,y=curPoint.y;
+        return [
+            //{x:x-1,y:y-1},     // 取消斜着走
+            {x:x,y:y-1},
+           // {x:x+1,y:y-1},
+            {x:x+1,y:y},
+           // {x:x+1,y:y+1},
+            {x:x,y:y+1},
+           // {x:x-1,y:y+1},
+            {x:x-1,y:y}
+        ]
+    }
+    //判断点是否存在在列表中，是的话返回的是序列号
+    function existList(point,list) {
+        for(var i in list) {
+            if(point.x==list[i].x && point.y==list[i].y) {
+                return i;
+            }
+        }
+        return false;
+    }
+
+</script>
+
+</body>
+</html>

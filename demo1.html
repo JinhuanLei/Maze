@@ -1,21 +1,34 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
+    <link rel="stylesheet" href="css/bootstrap.css">
 </head>
 <body oncontextmenu="return false" onselectstart="return false">
-格子长：<input type="text" id="txtLength" value="10" /> 格子宽：<input type="text" id="txtWidth" value="10"/>
-<input type="button" value="绘制格子" id="btnPrint1" onclick="initGrid();" />
-<input type="button" value="搜索路径" id="btnPrint2" onclick="startSearch();" />
+<!--Length：<input type="text" id="txtLength" value="10" /> Width：<input type="text" id="txtWidth" value="10"/>-->
+<!--<input type="button" value="DrawMaze" id="btnPrint1" onclick="initGrid();" />-->
+
 <br/>
-提示：点击格子设置/取消障碍
-<div id="container">
+<div class="container">
+    <div class="row" >
+        <div class="col-md-offset-3" style="margin-top: 20px">
+
+            <div  id="container">
+
+            </div>
+
+        </div>
+
+        <input type="button" class="btn-success" value="Start" id="btnPrint2" onclick="startSearch();" />
+    </div>
 </div>
+
 <div id="msg">
 </div>
 <div>
+    <script src="js/jquery.js";></script>
+    <script src="js/bootstrap.js"></script>
     <script>
-        var tdTitle = "点击格子设置/取消障碍";
+        var tdTitle = "qwq";
        // var grid = [];
         var grid=[[1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,  1,0,1],
             [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,  1,0,1],
@@ -53,18 +66,18 @@
 //            Y = parseInt($("txtWidth").value) || 0;
             X=18;
             Y=18;
-            var html = "<table id='mainTable' border='0' cellpadding='1' cellspacing='1' style='background:#999999;' ><tbody>";
+            var html = "<table id='mainTable' border='1' cellpadding='1' cellspacing='1' style='background:#999999;' ><tbody>";
             for(var i=0;i<X;i++){
                 html += "<tr>";
                //grid[i] = [];
                 for(var j=0;j<Y;j++){
-                   if(grid[i][j] == 1 )
+                   if(grid[i][j] == 1 )   //path
                    {
-                       html += "<td title='"+ tdTitle +"' width='30' height='30' style='background:#ffffff;' onclick='setBlock(this,"+ i +","+ j +")'> </td>";
+                       html += "<td  width='30' height='30' style='background:#E6E0E2;' onclick='setBlock(this,"+ i +","+ j +")'> </td>";
                    }
                    else
                    {
-                       html += "<td title='"+ tdTitle +"' width='30' height='30' style='background:#666666;' onclick='setBlock(this,"+ i +","+ j +")'> </td>";
+                       html += "<td  width='30' height='30' style='background:#666666;' onclick='setBlock(this,"+ i +","+ j +")'><img src='images/insidewall1.png'> </td>";
                    }
 
                 }
@@ -83,6 +96,7 @@
 
             //print start and end position.
             endPos = new Position(X-1,Y-1);
+            gridUI[startPos.X][startPos.Y].innerHTML="<img src='images/pacman.png'>"
             gridUI[startPos.X][startPos.Y].style.background='#339933';
             gridUI[endPos.X][endPos.Y].style.background='#339933';
             gridUI[startPos.X][startPos.Y].onclick="return false;";
@@ -213,6 +227,7 @@
                 }
             }
         }
+        var Lastpoint;
         function paintSearchResult(closedQ){
             var path = [];
             var lastPOS = closedQ.pop();
@@ -223,9 +238,19 @@
             }
             var timer = window.setInterval(function(){
                 var point = path.pop();
-                if(point) point.style.background="#339933";
-                else clearInterval(timer);
-            },200);
+                if(point)
+                {
+                    if(Lastpoint)
+                    {
+                        Lastpoint.style.background="#FFFFFF"
+                    }
+                    point.style.background="#339933";
+                    Lastpoint=point;
+                }
+                else {
+                    clearInterval(timer);
+                }
+            },400);
         }
 
         function startSearch(){

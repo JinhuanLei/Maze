@@ -2,28 +2,128 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="content-language" content="en-US" />
     <title>Title</title>
     <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.css">
+    <style>
+        body {background-color: #D7DFE9;}
+        /* Zoom In #1 */
+        .hover01 figure img {
+            -webkit-transform: scale(1);
+            transform: scale(1);
+            -webkit-transition: .3s ease-in-out;
+            transition: .3s ease-in-out;
+        }
+        .hover01 figure:hover img {
+            -webkit-transform: scale(1.3);
+            transform: scale(1.3);
+        }
+
+        @font-face {
+            font-family: 'iconfont';  /* project id 481344 */
+            src: url('//at.alicdn.com/t/font_481344_71fnhqidxgczncdi.eot');
+            src: url('//at.alicdn.com/t/font_481344_71fnhqidxgczncdi.eot?#iefix') format('embedded-opentype'),
+            url('//at.alicdn.com/t/font_481344_71fnhqidxgczncdi.woff') format('woff'),
+            url('//at.alicdn.com/t/font_481344_71fnhqidxgczncdi.ttf') format('truetype'),
+            url('//at.alicdn.com/t/font_481344_71fnhqidxgczncdi.svg#iconfont') format('svg');
+        }
+
+        .iconfont {
+            font-family: "iconfont";
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-stroke-width: 0.2px;
+            -moz-osx-font-smoothing: grayscale;
+            padding-left: 0
+        }
+
+    </style>
 </head>
 <body>
 <div class="container">
-<div class="row" >
-    <div class="col-md-10" style="margin-top: 20px">
-    <canvas id="canvas1" width="1200" height="600"></canvas>
-        <img src="images/pacman.png" id="pacman" hidden="hidden" />
-        <div  id="container">
+    <div class="row" >
+        <div class="hover01 col-md-10" style="margin-top: 20px">
 
+            <canvas id="canvas1" width="1200" height="600"> </canvas>
+                       <h2><span style="position: relative; top: -600px; right:-24px;" class="label label-warning">Pick a character:</span></h2>
+            <h2><span style="position: relative; top: -650px; left:900px;" class="label label-primary">Change the maze:</span></h2>
+
+            <figure> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <img style="margin-top: -1200px"src="images/horsebut.png" onclick="startAnimating(1,0,maze)">
+
+            </figure>
+                <figure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <img style="margin-top: -900px"src="images/sheepbut.png" onclick="startAnimating(1,1,maze)"></figure>
+            <figure>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <img style="margin-top: -650px"src="images/chickenbut.png" onclick="startAnimating(1,2,maze)"></figure>
+            <div class="col-md-3" style="position: relative; top: -700px; left:900px;"><select  class="form-control" id="mazeid" onchange="changemaze()">
+
+                <option>Maze 1</option>
+                <option>Maze 2</option>
+                <option>Maze 3</option>
+
+
+            </select></div>
+            <div class="col-md-4" style="position: relative; top: -670px; left:630px;"> <h3><span class="label label-info" style="position: relative" top="-10px">Status:</span></h3><textarea class="form-control" id="animalstatus" readonly="readonly" rows="20" cols="40"></textarea></div>
+
+            <img src="images/pacman.png" id="pacman" hidden="hidden" />
+            <img src="images/sheep.png" id="sheep" hidden="hidden" />
+            <img src="images/chicken.png" id="chicken" hidden="hidden" />
+            <img src="images/horse.png" id="horse" hidden="hidden" />
+            <img src="images/insidewall.jpg" id="insidewall" hidden="hidden" />
+            <img src="images/insidewall2.jpeg" id="insidewall2" hidden="hidden" />
+            <img src="images/path2.jpeg" id="path2" hidden="hidden" />
+            <img src="images/outsidewall.jpeg" id="outsidewall" hidden="hidden" />
+            <img src="images/end.png" id="end" hidden="hidden" />
+        </div>
+        <div class="col-md-12" style="position: relative; top: -660px;">
+            <!--<div class="col-md-5" >-->
+                <!--<button class="btn-success"  id="start"> start</button>-->
+                <!--&lt;!&ndash;<button class="btn-success"  id="add"> Add</button>&ndash;&gt;-->
+                <!--&lt;!&ndash;<button class="btn-success"  id="addChicken"> Chicken</button>&ndash;&gt;-->
+            <!--</div>-->
+            <div class="col-md-5 col-md-offset-5">
+                <input id="ex13" type="text" data-slider-ticks="[1, 2, 3]" data-slider-ticks-snap-bounds="10" data-slider-value="1" data-slider-ticks-labels='["Normal", "Accelerate", "Furious"]'/>
+            </div>
+            <div class="col-md-2" id="linkweb" style="font-size: 150%"> </div>
         </div>
     </div>
-
 
 </div>
 </div>
 <script src="js/jquery.js";></script>
 <script src="js/bootstrap.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.js" ></script>
 <script type="text/javascript">
-    // requestAnimationFrame的兼容性写法
+
+
+    Date.prototype.toLocaleString = function() {
+
+    var hours=this.getHours();
+        if(hours<10)
+        {
+            hours="0"+hours;
+        }
+
+
+        var minutes=this.getMinutes();
+        if(minutes<10)
+        {
+            minutes="0"+minutes;
+        }
+        var seconds=this.getSeconds();
+        if(seconds<10)
+        {
+            seconds="0"+seconds;
+        }
+
+
+            return hours + "：" + minutes + "：" + seconds;
+    };
+
+    setInterval("document.getElementById('linkweb').innerHTML=new Date().toLocaleString();",1000);
 
     window.requestAnimFrame = (function(){                //浏览器的兼容设置
         return  window.requestAnimationFrame       ||
@@ -36,135 +136,180 @@
             };
     })();
 
-        window.cancelAnimationFrame = (function() {
-            return window.cancelAnimationFrame ||
-                window.webkitCancelAnimationFrame ||
-                window.mozCancelAnimationFrame ||
-                window.oCancelAnimationFrame ||
-                function(timer) {
-                    window.clearTimeout(timer);
-                };
-        })();
+    window.cancelAnimationFrame = (function() {
+        return window.cancelAnimationFrame ||
+            window.webkitCancelAnimationFrame ||
+            window.mozCancelAnimationFrame ||
+            window.oCancelAnimationFrame ||
+            function(timer) {
+                window.clearTimeout(timer);
+            };
+    })();
 
-        var canvas1 = document.getElementById("canvas1");
-        var ctx = canvas1.getContext("2d");
-        var baseX=300;
-        var baseY=20;
-        var wallwidth=30;
-       var moveX=0;
+    var canvas1 = document.getElementById("canvas1");
+    var ctx = canvas1.getContext("2d");
+    var baseX=300;
+    var baseY=20;
+    var wallwidth=30;
+    var outsidewallwidth=15;
+    var moveX=0;
     var moveY=0;
     var pointer=0;
     var stopMark=0;
     var gridUI = [];
     var grid=[];
-    var fps, fpsInterval, startTime, now, then, elapsed;
+    var fpsInterval, startTime, now, then, elapsed;
+    var startTime1, now1, then1, elapsed1;
+    var startTime2, now2, then2, elapsed2;
     var X = Y = 0;
     var tdTitle = "点击格子设置/取消障碍";
-    var maze = [[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,  0,1,0],
-                [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,  0,1,0],
-                [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,  0,1,0],
-                [0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,  0,1,0],
-                [0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,  0,1,0],
-                [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,  0,1,0],
-                [0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
-                [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
-                [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
-                [0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
-                [0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 , 0,1,0],
-                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,1,0],
-                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,1,0],
-                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,1,0],
-                [0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1 , 1,1,0],
-                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,0,0],
-                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,0,0],
-                [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,0,0]];
-    var str=searchRoadAStar(17,0,0,17);
-        DrawMaze();
-    initGrid();
-    function $(id) {
-        return document.getElementById(id);
-    }
-        drawPath();
-    startAnimating(5);
+    var insidewall=document.getElementById("insidewall");
+    var insidewall2=document.getElementById("insidewall2");
+    var imagepath=document.getElementById("path2");
+    var outsidewall=document.getElementById("outsidewall");
 
-    function startAnimating(fps) {
+    var maze1 =
+       [[0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1,  0,1,0],
+        [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,  0,1,0],
+        [0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0,  0,1,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0,  0,1,0],
+        [0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,  0,1,0],
+        [0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1,  1,1,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0 , 0,1,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+        [0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+        [0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1 , 1,1,0],
+        [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,0,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1 , 1,1,0],
+        [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0]];
+
+    var maze2 =
+           [[1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1,  0,1,0],
+            [1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0,  0,1,0],
+            [0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0,  0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0,  0,1,0],
+            [0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,  0,1,0],
+            [0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1,  1,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,0,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+            [0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1 , 1,1,0],
+            [0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,1,0],
+            [0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0]];
+    var maze3 =
+           [[1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1,  0,1,0],
+            [1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0,  0,1,0],
+            [0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0,  0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0,  0,1,0],
+            [0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,  0,1,0],
+            [0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1,  1,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0 , 0,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0 , 0,1,0],
+            [0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1 , 1,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 , 0,0,0],
+            [0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1 , 1,1,0],
+            [0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 , 0,1,0]];
+    var maze=maze1;
+    var str;
+    var str1;
+    var str2;
+var starttime1,starttime2,starttime3;
+    DrawMaze();
+
+    // drawPath();
+    // startAnimating(5);
+
+     function changemaze(){
+         var mazeid=$("#mazeid").val();
+         var num=mazeid.substring(5,6)
+      if(num=="1")
+      {
+         maze=maze1;
+          DrawMaze();
+      }else if(num=="2")
+      {
+          maze=maze2;
+          DrawMaze();
+      }else if(num=="3")
+      {
+          maze=maze3;
+          DrawMaze();
+
+      }
+     }
+
+
+    function startAnimating(fps,animalid,maze) {
         fpsInterval = 1000 / fps;
-        then = Date.now();
-        startTime = then;
-        MoveInMaze();
-    }
-
-    function setBlock(td,i,j){
-        if(grid[i][j] == 1){
-            gridUI[i][j].style.background='#666666';
-            grid[i][j] = 0;//block
-        }else{
-            gridUI[i][j].style.background='#ffffff';
-            grid[i][j] = 1;
-        }
-    }
-
-    function initGrid(){
-        pathLength = 0;
-       // closedQ = new Queue();
-//            X = parseInt($("txtLength").value) || 0;
-//            Y = parseInt($("txtWidth").value) || 0;
-        X=18;
-        Y=18;
-        var html = "<table id='mainTable' border='1' cellpadding='1' cellspacing='1' style='background:#999999;' ><tbody>";
-        for(var i=0;i<X;i++){
-            html += "<tr>";
-            grid[i] = [];
-            for(var j=0;j<Y;j++){
-                grid[i][j] = 1;
-                html += "<td title='"+ tdTitle +"' width='30' height='30' style='background:#ffffff;' onclick='setBlock(this,"+ i +","+ j +")'> <img src='images/pacman.png' </td>";
-            }
-            html += "</tr>";
-        }
-        html += "</tbody></table>";
-        $("container").innerHTML = html;
-
-        var table = $('mainTable');
-        for (var i = 0; i < X; i++) {
-            gridUI[i] = new Array(Y);
-            for (var j = 0; j < Y; j++) {
-                gridUI[i][j] = table.rows[i].cells[j];
-            }
-        }
-
-        //print start and end position.
-//        endPos = new Position(X-1,Y-1);
-//        gridUI[startPos.X][startPos.Y].style.background='#339933';
-//        gridUI[endPos.X][endPos.Y].style.background='#339933';
-//        gridUI[startPos.X][startPos.Y].onclick="return false;";
-//        gridUI[endPos.X][endPos.Y].onclick="return false;";
-//        gridUI[startPos.X][startPos.Y].title="start";
-//        gridUI[endPos.X][endPos.Y].title="end";
-    }
-
-
-       function initialMaze(arrlength) {   //随机生成迷宫
-    var newmaze=new Array();
-    var x=Math.random();
-    for(var y=0;y<arrlength;y++)
-    {
-        var row=new Array();
-        for(var x=0;x<arrlength;x++)
+        $("#mazeid").attr("disabled", true);
+        switch (animalid)
         {
+            case 0:
+///horse
+         $("#animalstatus").val($('#animalstatus').val()+'\n'+'Horse starts at '+new Date().toLocaleString());
+             starttime1=new Date().getTime();
+                var startpoint=randomStartPoint(maze);
+                //alert(startpoint);
+                console.log(startpoint);
+                str=searchRoadAStar(startpoint[0],startpoint[1],0,17,maze);
 
-            row[x]=Math.floor(Math.random()*2);
+               console.log(str);
+                then = Date.now();
+                startTime = then;
+                MoveInMaze();
+                break;
+
+            case 1:
+                //sheep
+                $("#animalstatus").val($('#animalstatus').val()+'\n'+'Sheep starts at '+new Date().toLocaleString());
+                starttime2=new Date().getTime();
+                var startpoint=randomStartPoint(maze);
+                console.log(startpoint);
+
+                str1=searchRoadAStar(startpoint[0],startpoint[1],0,17,maze);
+
+                then1 = Date.now();
+                startTime1 = then1;
+                MoveInMaze1();
+                break;
+
+
+            case 2:
+                //chicken
+                $("#animalstatus").val($('#animalstatus').val()+'\n'+'Chicken starts at '+new Date().toLocaleString());
+                starttime3=new Date().getTime();
+                var startpoint=randomStartPoint(maze);
+                console.log(startpoint);
+
+                str2=searchRoadAStar(startpoint[0],startpoint[1],0,17,maze);
+                then2 = Date.now();
+                startTime2 = then2;
+                MoveInMaze2();
+                break;
         }
-        newmaze[y]=row;
+
     }
-    return newmaze;
-       }
 
 
     function MoveInMaze()
     {
-        //console.log(str);
-//        console.log(str[pointer].x);
-
 
         stopMark=requestAnimFrame(MoveInMaze);
 
@@ -180,34 +325,141 @@
             then = now - (elapsed % fpsInterval);
 
             // Put your drawing code here
-            var pacman=document.getElementById("pacman");
-            moveX=baseX+str[pointer].y*wallwidth;
-            moveY=baseY+str[pointer].x*wallwidth;
+
 
 
             if(pointer==str.length)
             {
+                $("#animalstatus").val($('#animalstatus').val()+'\n'+'Hourse spends '+ (new Date().getTime()-starttime1)/1000+' seconds with '+str.length+' steps');
+                $("#animalstatus").val($('#animalstatus').val()+'\n'+'Hourse stops at '+new Date().toLocaleString());
                 if(stopMark) {
+
                     window.cancelAnimationFrame(stopMark);
                     stopMark = null;
                 }
                 return;
             }
+            var horse=document.getElementById("horse");
+            moveX=baseX+str[pointer].y*wallwidth;
+            moveY=baseY+str[pointer].x*wallwidth;
             if(pointer>=1)
 
             {
                 ctx.clearRect(baseX+str[pointer-1].y*wallwidth,baseY+str[pointer-1].x*wallwidth, 30,30);
+                ctx.drawImage(imagepath,baseX+str[pointer-1].y*wallwidth,baseY+str[pointer-1].x*wallwidth);
             }
 
-            ctx.drawImage(pacman,moveX, moveY);
+            ctx.drawImage(horse,moveX, moveY);
 
             pointer++;
         }
 
     }
 
+    var stopMark1;
+    var pointer1=0;
 
-       function drawPath() {
+    function MoveInMaze1()
+    {
+        //console.log(str);
+//        console.log(str[pointer].x);
+
+
+        stopMark1=requestAnimFrame(MoveInMaze1);
+
+        now1 = Date.now();
+        elapsed1 = now1 - then1;
+
+        // if enough time has elapsed, draw the next frame
+
+        if (elapsed1 > fpsInterval) {
+            // Get ready for next frame by setting then=now, but also adjust for your
+            // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+            then1 = now1 - (elapsed1 % fpsInterval);
+            // Put your drawing code here
+
+            if(pointer1==str1.length)
+            {
+                $("#animalstatus").val($('#animalstatus').val()+'\n'+'Sheep spends '+ (new Date().getTime()-starttime1)/1000+' seconds with '+str1.length+' steps');
+
+                $("#animalstatus").val($('#animalstatus').val()+'\n'+'Sheep stops at '+new Date().toLocaleString());
+                if(stopMark1) {
+
+                    window.cancelAnimationFrame(stopMark1);
+                    stopMark1 = null;
+                }
+                return;
+            }
+            var sheep=document.getElementById("sheep");
+            var moveX=baseX+str1[pointer1].y*wallwidth;
+            var moveY=baseY+str1[pointer1].x*wallwidth;
+            if(pointer1>=1)
+
+            {
+                ctx.clearRect(baseX+str1[pointer1-1].y*wallwidth,baseY+str1[pointer1-1].x*wallwidth, 30,30);
+                ctx.drawImage(imagepath,baseX+str1[pointer1-1].y*wallwidth,baseY+str1[pointer1-1].x*wallwidth);
+            }
+
+            ctx.drawImage(sheep,moveX, moveY);
+
+            pointer1++;
+        }
+
+    }
+
+    var stopMark2;
+    var pointer2=0;
+    function MoveInMaze2()
+    {
+
+        stopMark2=requestAnimFrame(MoveInMaze2);
+
+        now2 = Date.now();
+        elapsed2 = now2 - then2;
+
+        // if enough time has elapsed, draw the next frame
+
+        if (elapsed2 > fpsInterval) {
+
+            // Get ready for next frame by setting then=now, but also adjust for your
+            // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+            then2 = now2 - (elapsed2 % fpsInterval);
+
+            // Put your drawing code here
+
+
+
+            if(pointer2==str2.length)
+            {
+                $("#animalstatus").val($('#animalstatus').val()+'\n'+'Chicken spends '+ (new Date().getTime()-starttime1)/1000+' seconds with '+str2.length+' steps');
+
+                $("#animalstatus").val($('#animalstatus').val()+'\n'+'Chicken stops at '+new Date().toLocaleString());
+                if(stopMark2) {
+
+                    window.cancelAnimationFrame(stopMark2);
+                    stopMark2 = null;
+                }
+                return;
+            }
+            var chicken=document.getElementById("chicken");
+            var moveX=baseX+str2[pointer2].y*wallwidth;
+            var moveY=baseY+str2[pointer2].x*wallwidth;
+            if(pointer2>=1)
+
+            {
+                ctx.clearRect(baseX+str2[pointer2-1].y*wallwidth,baseY+str2[pointer2-1].x*wallwidth, 30,30);
+                ctx.drawImage(imagepath,baseX+str2[pointer2-1].y*wallwidth,baseY+str2[pointer2-1].x*wallwidth);
+            }
+
+            ctx.drawImage(chicken,moveX, moveY);
+
+            pointer2++;
+        }
+
+    }
+
+
+    function drawPath() {
 
 
 
@@ -221,6 +473,7 @@
         for(var t=0;t<str.length;t++)
         {
             ctx.fillRect(baseX+wallwidth*str[t].y,baseY+wallwidth*str[t].x,wallwidth,wallwidth);
+            //ctx.drawImage(insidewall,baseX+wallwidth*str[t].y, baseY+wallwidth*str[t].x);
         }
 
     }
@@ -231,87 +484,94 @@
         //设置线宽
         ctx.lineWidth = 10;
         //设置线的颜色
-        ctx.strokeStyle ="dodgerblue";
+        ctx.strokeStyle ="#D7DFE9";
         ctx.fillStyle="black";
 
         //画一个空心的矩形，
+        ctx.clearRect(0,0,1200,600);
         ctx.strokeRect(0,0,1200,600);
         //maze=initialMaze(17);
-for(var y=0;y<maze.length;y++)
-{
-    console.log(maze[y].length);
-    for(var x=0;x<maze[y].length;x++)
-    {
-        if(maze[y][x]==1)
+        for(var y=0;y<maze.length;y++)
         {
-             ctx.fillRect(baseX+wallwidth*x,baseY+wallwidth*y,wallwidth,wallwidth);
-        }
-    }
-}
-
-        ctx.strokeRect(baseX,baseY,maze[1].length*wallwidth,maze.length*wallwidth);
-    }
-
-
-function searchRoadDFS(start_x,start_y,end_x,end_y) {
-    var stackList=[];
-    var result=[];
-
-        if(start_x==end_x&&start_y==end_y)
-        {
-            return true;
-        }
-            var node=new Node(start_x,start_y,1);
-            stackList.push({position:node});
-
-            while (stackList.length==0)
+            console.log(maze[y].length);
+            for(var x=0;x<maze[y].length;x++)
             {
-           var currentPoint=stackList.pop();
-           var surroundPoint=SurroundPoint(currentPoint);
-         for(var i=0;i<surroundPoint.length;i++)
-     {
-         var childNode=surroundPoint[i];
-
-
-
-         if(childNode!=null &&
-             !childNode.visited &&
-             childNode.x>=0 &&                            //判断是否在地图上
-             childNode.y>=0 &&
-             childNode.x<maze.length &&
-             childNode.y<maze[0].length &&
-             maze[childNode.x][childNode.y] != 1 &&         //判断是否是障碍物
-             //判断是否在关闭列表中
-             maze[childNode.x][currentPoint.y]!=1 &&   //判断之间是否有障碍物，如果有障碍物是过不去的
-             maze[currentPoint.x][childNode.y]!=1)
-         {
-             stackList.add(childNode);
-             childNode.visited=true;
-
-         }
-     }
-
+                if(maze[y][x]==1)
+                {
+                    //ctx.fillRect(baseX+wallwidth*x,baseY+wallwidth*y,wallwidth,wallwidth);
+                    ctx.drawImage(insidewall2,baseX+wallwidth*x,baseY+wallwidth*y);
+                }
+                else {
+                    ctx.drawImage(imagepath,baseX+wallwidth*x,baseY+wallwidth*y);
+                }
             }
-}
 
-function Node(x,y,visited){
-        this.x = x;
-        this.y = y;
-        this.visited=visited;
+            var end=document.getElementById("end");
+            ctx.drawImage(end,baseX+wallwidth*17,baseY);
+
+        }
+
+        for(var x=0;x<38;x++)
+        {
+            ctx.drawImage(outsidewall,(baseX-outsidewallwidth)+outsidewallwidth*x,baseY-outsidewallwidth);
+            ctx.drawImage(outsidewall,(baseX-outsidewallwidth),(baseY-outsidewallwidth)+outsidewallwidth*x);
+            ctx.drawImage(outsidewall,(baseX-outsidewallwidth)+outsidewallwidth*37,(baseY-outsidewallwidth)+outsidewallwidth*x);
+            ctx.drawImage(outsidewall,(baseX-outsidewallwidth)+outsidewallwidth*x,(baseY-outsidewallwidth)+outsidewallwidth*37);
+        }
+
+        //ctx.strokeRect(baseX,baseY,maze[1].length*wallwidth,maze.length*wallwidth);
     }
 
 
 
 
+   function randomStartPoint(currentmaze) {
+var maze=currentmaze;
+var start_x;
+var start_y;
 
-    function searchRoadAStar(start_x,start_y,end_x,end_y){
+do{
+    start_x=Math.floor(Math.random()*18);
+start_y=Math.floor(Math.random()*18);
+}
+
+while(maze[start_x][start_y]!=0);
+
+      return [start_x,start_y];
+   }
+
+
+//    document.getElementById("start").addEventListener("click", function() {
+//
+//        var x=randomStartPoint(maze);
+//        alert(x);
+//
+//    }, false);
+//
+//    document.getElementById("add").addEventListener("click", function() {
+//
+//        startAnimating(fps,1);
+//
+//    }, false);
+//
+//    document.getElementById("addChicken").addEventListener("click", function() {
+//
+//        startAnimating(fps,2);
+//
+//    }, false);
+
+
+
+
+
+    function searchRoadAStar(start_x,start_y,end_x,end_y,currentmaze){
         var openList=[],    //开启列表
             closeList=[],   //关闭列表
             result=[],      //结果数组
             result_index;   //结果数组在开启列表中的序号
 //        ctx.fillStyle="aquamarine";
 //        ctx.fillRect(baseX+wallwidth*start_y,baseY+start_x*wallwidth,wallwidth,wallwidth);    //坐标和画布相反的,初始点
-
+  var maze=currentmaze;
 
         openList.push({x:start_x,y:start_y,G:0});//把当前点加入到开启列表中，并且G是0
 
@@ -395,11 +655,11 @@ function Node(x,y,visited){
         return [
             //{x:x-1,y:y-1},     // 取消斜着走
             {x:x,y:y-1},
-           // {x:x+1,y:y-1},
+            // {x:x+1,y:y-1},
             {x:x+1,y:y},
-           // {x:x+1,y:y+1},
+            // {x:x+1,y:y+1},
             {x:x,y:y+1},
-           // {x:x-1,y:y+1},
+            // {x:x-1,y:y+1},
             {x:x-1,y:y}
         ]
     }
@@ -407,11 +667,41 @@ function Node(x,y,visited){
     function existList(point,list) {
         for(var i in list) {
             if(point.x==list[i].x && point.y==list[i].y) {
+
                 return i;
             }
         }
         return false;
     }
+
+
+    var slider = new Slider("#ex13", {
+        ticks:[1, 2, 3],
+        ticks_labels: ['Normal', 'Accelerate', 'Furious'],
+        ticks_positions: [0, 50, 100],
+        ticks_snap_bounds: 10
+    });
+    slider.on("slide", function(sliderValue) {
+        switch(sliderValue)
+        {
+
+            case 1:
+                fps=1;
+                fpsInterval = 1000 / fps;
+                break;
+
+            case 2:
+                fps=2;
+                fpsInterval = 1000 / fps
+                break;
+            case 3:
+                fps=10;
+                fpsInterval = 1000 / fps
+                break;
+
+        }
+        console.log(fps);
+    });
 
 </script>
 
